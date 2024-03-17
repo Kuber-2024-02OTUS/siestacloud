@@ -1,0 +1,27 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+  namespace: homework
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rewrite-target: /homepage
+    kubernetes.io/ingress.class: nginx
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - homework.otus 
+      secretName: otus-nginx-secret
+  rules:
+    - host: homework.otus 
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nginx-service
+                port:
+                  number: 80
