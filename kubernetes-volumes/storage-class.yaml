@@ -1,0 +1,12 @@
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: yc-network-hdd-retain
+allowVolumeExpansion: true
+parameters:
+  csi.storage.k8s.io/fstype: ext4
+  type: network-hdd
+provisioner: disk-csi-driver.mks.ycloud.io
+reclaimPolicy: Retain
+volumeBindingMode: WaitForFirstConsumer

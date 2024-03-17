@@ -23,8 +23,12 @@ spec:
       nodeSelector:
         homework: "true"
       volumes:
-      - name: shared-volume
-        emptyDir: {}
+      - name: pv-data
+        persistentVolumeClaim:
+          claimName: pvc-nginx
+      - name: config-volume
+        configMap:
+          name: custom-config
       - name: nginx-default-config-volume
         configMap:
           name: nginx-default-config-homework
@@ -35,7 +39,7 @@ spec:
         command: ['sh', '-c', 'wget -O /init/index.html https://www.w3.org/Style/CSS/Test/CSS3/Selectors/current/html/tests/css3-modsel-1.html']
         volumeMounts:
           - mountPath: /init
-            name: shared-volume
+            name: pv-data
       containers:
       - name: nginx
         image: nginx:1.14.2
@@ -43,10 +47,13 @@ spec:
         - name: NGINX_PORT
           value: "8000"
         volumeMounts:
-          - mountPath: /homework
-            name: shared-volume
+          - name: pv-data
+            mountPath: /homework
           - name: nginx-default-config-volume
             mountPath: /etc/nginx/conf.d/
+          - name: config-volume
+            mountPath: /homework/conf
+
         ports:
           - containerPort: 8000
         lifecycle:
