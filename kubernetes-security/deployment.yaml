@@ -1,0 +1,79 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+  namespace: homework
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      serviceAccountName: monitoring-sa
+      nodeSelector:
+        homework: "true"
+      volumes:
+      - name: pv-data
+        persistentVolumeClaim:
+          claimName: pvc-nginx
+      - name: config-volume
+        configMap:
+          name: custom-config
+      - name: nginx-default-config-volume
+        configMap:
+          name: nginx-default-config-homework
+      terminationGracePeriodSeconds: 4
+      initContainers:
+      - name: init-container
+        image: busybox
+        command: ['sh', '-c', 'wget -O /init/index.html https://www.w3.org/Style/CSS/Test/CSS3/Selectors/current/html/tests/css3-modsel-1.html']
+        volumeMounts:
+          - mountPath: /init
+            name: pv-data
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        env:
+        - name: NGINX_PORT
+          value: "8000"
+        volumeMounts:
+          - name: pv-data
+            mountPath: /homework
+          - name: nginx-default-config-volume
+            mountPath: /etc/nginx/conf.d/
+          - name: config-volume
+            mountPath: /homework/conf
+
+        ports:
+          - containerPort: 8000
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "rm -f /homework"]
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        readinessProbe:
+          httpGet:
+            path: /index.html
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+          timeoutSeconds: 1
