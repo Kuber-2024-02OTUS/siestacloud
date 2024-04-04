@@ -1,0 +1,7 @@
+{{- if .Values.serviceAccountCd.create -}}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "template-chart-sps.fullname" . }}-cd
+{{- end }}

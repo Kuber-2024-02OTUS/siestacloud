@@ -1,0 +1,60 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "template-chart-sps.fullname" . }}
+  labels:
+    {{- include "template-chart-sps.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.deploy.replicaCount }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      {{- include "template-chart-sps.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.deploy.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "template-chart-sps.labels" . | nindent 8 }}
+        {{- with .Values.deploy.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.deploy.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "template-chart-sps.fullname" . }}-monitoring
+      {{- with .Values.deploy.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.deploy.terminationGracePeriodSeconds }}
+      initContainers:
+        {{- toYaml .Values.deploy.initContainers | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.deploy.image.repository }}:{{ .Values.deploy.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.deploy.image.pullPolicy }}
+          env: 
+            {{- toYaml .Values.deploy.env | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          lifecycle:
+            {{- toYaml .Values.deploy.lifecycle | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.deploy.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.deploy.resources | nindent 12 }}
+          {{- with .Values.deploy.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
