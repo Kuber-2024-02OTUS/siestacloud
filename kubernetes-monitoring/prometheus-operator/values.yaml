@@ -1,0 +1,3 @@
+prometheus-operator:
+  enable: true
+  clusterDomain: k8s.sps.ru
