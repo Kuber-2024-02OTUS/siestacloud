@@ -70,5 +70,6 @@ secret: <using>  <--- AWS_SECRET_ACCESS_KEY
 
 ## 🔧 Скриншоты <a name = "s"></a>
 
+
 ![image info](./imgs/11.png)
 ![image info](./imgs/22.png)
