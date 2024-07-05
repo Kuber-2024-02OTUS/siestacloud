@@ -1,0 +1,25 @@
+csi-s3: 
+  enabled: true 
+
+  images:
+    attacher: cr.yandex/yc-marketplace/yandex-cloud/csi-s3/csi-attacher:v3.0.1
+    csi: cr.yandex/yc-marketplace/yandex-cloud/csi-s3/csi-s3-driver:0.35.5
+    provisioner: cr.yandex/yc-marketplace/yandex-cloud/csi-s3/csi-provisioner:v2.1.0
+    registrar: cr.yandex/yc-marketplace/yandex-cloud/csi-s3/csi-node-driver-registrar:v1.2.0
+  secret:
+    accessKey: "SECRET"
+    create: true
+    endpoint: https://storage.yandexcloud.net
+    name: csi-s3-secret
+    secretKey: "SECRET"
+  storageClass:
+    annotations: {}
+    create: true
+    mountOptions: --memory-limit 1000 --dir-mode 0777 --file-mode 0666
+    name: csi-s3-sps
+    reclaimPolicy: Delete
+    singleBucket: ""
+  tolerations:
+    all: false
+    controller: []
+    node: []
