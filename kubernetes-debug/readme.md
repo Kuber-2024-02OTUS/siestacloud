@@ -2,6 +2,9 @@
 
 ## Содержание
 - [посмотреть логи на ноде ](#p)
+- [directory](#directory)
+- [tcpdump](#tcpdump)
+- [strace](#strace)
 
 
 
@@ -15,7 +18,7 @@ cat /host/var/log/pods/default_node-debugger-cl1vmt8d77ghvdn8rr0v-ujed-4254n_59b
 ```
 
 
-## 🧐 directory  <a name = "p"></a>
+## 🧐 directory  <a name = "directory"></a>
 
 ```
 kubectl debug -n default nginx --image=busybox -ti --target=nginx-distroless
@@ -38,7 +41,7 @@ lrwxrwxrwx    1 root     root            22 Apr 16 15:39 modules -> /usr/lib/ngi
 ```
 
 
-## 🧐 tcpdump  <a name = "p"></a>
+## 🧐 tcpdump  <a name = "tcpdump"></a>
 
 ```
 kubectl debug -n default nginx --image=nicolaka/netshoot -ti --target=nginx-distroless
@@ -67,7 +70,7 @@ listening on any, link-type LINUX_SLL2 (Linux cooked v2), snapshot length 262144
 ```
 
 
-## 🧐 strace  <a name = "p"></a>
+## 🧐 strace  <a name = "strace"></a>
 
 
 ```
