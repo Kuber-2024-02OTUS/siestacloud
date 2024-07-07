@@ -1,0 +1,6 @@
+dependencies:
+- name: csi-s3
+  repository: oci://cr.yandex/yc-marketplace/yandex-cloud/csi-s3
+  version: 0.35.5
+digest: sha256:80d6a39e5fc5f7853d5c166881b550cb3a87b6fa19cc64e735b2b530f293e000
+generated: "2024-07-05T17:30:54.236733345+03:00"
