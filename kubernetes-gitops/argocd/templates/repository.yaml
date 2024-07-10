@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: repository
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repository
+stringData:
+  type: helm
+  url: {{ .Values.argocd.repo.infra.url }}
+  name: {{ .Values.argocd.repo.infra.name }}
+  password: {{ .Values.argocd.repo.infra.password }}
+  username: {{ .Values.argocd.repo.infra.username }}
